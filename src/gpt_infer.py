@@ -15,7 +15,7 @@ num_list = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nin
 if __name__ == "__main__":
     model_str = sys.argv[1]
     tsv_name = sys.argv[2]
-    cuda = False
+    cuda = True
     model = None
     if model_str.startswith("reload_"):
         if model_str.startswith("reload_bert"):

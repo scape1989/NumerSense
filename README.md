@@ -18,13 +18,17 @@ Code & Data for EMNLP 2020 paper:
 conda create -n numersense python=3.7
 conda activate numersense
 # install torch seperately at https://pytorch.org/get-started/locally/ if needed
-pip install happytransformer
+conda install pytorch==1.4.0 torchvision==0.5.0 cudatoolkit=10.1 -c pytorch -n numersense
 pip install transformers==3.0.2
+pip install happytransformer -U
 pip install tensorboardX
 mkdir pred_results
 
 # Optional:
 # Install apex following https://github.com/NVIDIA/apex#linux
+git clone https://github.com/NVIDIA/apex
+cd apex
+pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./
 ```
 
 ### Probing Experiments 
@@ -32,6 +36,8 @@ mkdir pred_results
 ```bash
 python src/mlm_infer.py bert-base data/test.core.masked.tsv
 ```
+
+Note that `bert-base` can be replaced by any model name in `[bert-base, bert-large, roberta-base, roberta-large]`.
 
 ```bash
 python src/gpt_infer.py gpt2 data/test.core.masked.tsv
@@ -41,9 +47,9 @@ python src/gpt_infer.py gpt2 data/test.core.masked.tsv
 ```bash
 mkdir saved_models
 CUDA_VISIBLE_DEVICES=0 python src/finetune_mlm.py \
-  --output_dir=saved_models/finetuned_bert_base --overwrite_output_dir \
+  --output_dir=saved_models/finetuned_bert_large --overwrite_output_dir \
   --model_type=bert \
-  --model_name_or_path=bert-base-uncased \
+  --model_name_or_path=bert-large-uncased \
   --do_train \
   --train_data_file=data/gkb_best_filtered.txt  \
   --do_eval \
@@ -52,9 +58,12 @@ CUDA_VISIBLE_DEVICES=0 python src/finetune_mlm.py \
   --per_gpu_eval_batch_size 64 \
   --block_size 64 \
   --logging_steps 100 \
-  --num_train_epochs 5 \
-  --line_by_line --mlm \
-  --fp16
+  --num_train_epochs 3 \
+  --line_by_line --mlm 
+```
+
+```bash 
+python src/mlm_infer.py reload_bert:saved_models/finetuned_bert_large data/test.core.masked.tsv
 ```
 
 ### Dataset
