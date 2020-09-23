@@ -1,4 +1,4 @@
-## NumerSense: NumerSense: Probing Numerical Commonsense Knowledge of BERTs
+## NumerSense: Probing Numerical Commonsense Knowledge of BERTs
 
 Code & Data for EMNLP 2020 paper:
 
